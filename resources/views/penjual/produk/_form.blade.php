@@ -17,6 +17,14 @@
         @enderror
     </div>
 
+    <div>
+        <label for="Keterangan_Tambahan" class="block text-sm font-bold mb-2">Keterangan atau Request Tambahan</label>
+        <textarea id="Keterangan_Tambahan" name="Keterangan_Tambahan" rows="3" maxlength="5000" placeholder="Contoh: pilihan warna, ukuran, atau permintaan khusus lainnya" class="w-full px-3.5 py-3 border border-[#dde1ea] rounded-xl text-sm outline-none focus:border-[#2878eb] resize-y">{{ old('Keterangan_Tambahan', $produk?->Keterangan_Tambahan) }}</textarea>
+        @error('Keterangan_Tambahan')
+            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
+    </div>
+
     <div class="grid sm:grid-cols-2 gap-5">
         <div>
             <label for="Harga" class="block text-sm font-bold mb-2">Harga (Rp)</label>

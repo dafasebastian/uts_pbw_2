@@ -40,6 +40,9 @@
                             @else
                                 <p class="mt-1 text-xs text-[#9aa1af]">Tidak ada deskripsi.</p>
                             @endif
+                            @if($produk->Keterangan_Tambahan)
+                                <p class="mt-1 max-w-md text-xs text-[#6b7385]"><span class="font-semibold">Keterangan tambahan:</span> {{ $produk->Keterangan_Tambahan }}</p>
+                            @endif
                         </td>
                         <td class="px-3 py-4 border-t border-[#dde1ea] whitespace-nowrap">
                             Rp{{ number_format((float) $produk->Harga, 0, ',', '.') }}

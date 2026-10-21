@@ -68,6 +68,7 @@ class ProdukController extends Controller
         return [
             'Nama_Produk' => ['required', 'string', 'max:100', 'regex:/\pL/u'],
             'Deskripsi' => 'nullable|string|max:5000',
+            'Keterangan_Tambahan' => 'nullable|string|max:5000',
             'Harga' => 'required|numeric|decimal:0,2|min:0|max:9999999999.99',
             'Stok' => 'required|integer|min:0|max:4294967295',
             'Status' => 'required|in:tersedia,habis',
@@ -81,6 +82,7 @@ class ProdukController extends Controller
             'Nama_Produk.regex' => 'Nama produk harus mengandung setidaknya satu huruf.',
             'Nama_Produk.max' => 'Nama produk maksimal 100 karakter.',
             'Deskripsi.max' => 'Deskripsi maksimal 5000 karakter.',
+            'Keterangan_Tambahan.max' => 'Keterangan atau request tambahan maksimal 5000 karakter.',
             'Harga.required' => 'Harga wajib diisi.',
             'Harga.numeric' => 'Harga harus berupa angka.',
             'Harga.decimal' => 'Harga hanya boleh memiliki maksimal 2 angka di belakang koma.',
