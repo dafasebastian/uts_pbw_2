@@ -1,0 +1,90 @@
+@extends('layouts.penjual')
+@section('title', 'Ulasan Pelanggan')
+
+@section('isi')
+@php $ulasanList = $penjual?->ulasan ?? collect(); @endphp
+
+<h1 class="text-3xl font-bold mb-1.5">Ulasan Pelanggan</h1>
+<p class="text-sm text-[#6b7385] mb-7">Semua ulasan yang masuk ke toko.</p>
+
+{{-- Notifikasi Sukses --}}
+@if(session('success'))
+    <div class="mb-4 p-4 bg-green-50 border border-green-200 text-green-700 rounded-xl text-sm">
+        {{ session('success') }}
+    </div>
+@endif
+
+<div class="border border-[#dde1ea] rounded-[40px] p-7 bg-white">
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr>
+                    <th class="text-left px-3 py-2.5">Nama Pembeli</th>
+                    <th class="text-left px-3 py-2.5">Rating</th>
+                    <th class="text-left px-3 py-2.5">Komentar & Respon</th>
+                    <th class="text-right px-3 py-2.5">Tanggal</th>
+                    <th class="text-left px-3 py-2.5">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+            @forelse($ulasanList->sortByDesc('created_at') as $u)
+                <tr>
+                    <!-- Nama Pembeli -->
+                    <td class="px-3 py-5 border-t border-[#dde1ea] font-medium">{{ $u->Nama_Pembeli }}</td>
+                    
+                    <!-- Rating Bintang -->
+                    <td class="px-3 py-5 border-t border-[#dde1ea] text-[#f5a623]">{{ str_repeat('★', $u->Rating) }}</td>
+                    
+                    <!-- Komentar & Form Respon -->
+                    <td class="px-3 py-5 border-t border-[#dde1ea]">
+                        <div class="mb-2">{{ $u->Ulasan }}</div>
+                        
+                        {{-- Jika ulasan sudah direspon, tampilkan balasannya. Jika belum, tampilkan form input respon --}}
+                        @if($u->respon)
+                            <div class="mt-2 p-2.5 bg-gray-50 rounded-lg text-xs text-gray-700 border border-[#dde1ea]">
+                                <span class="font-bold text-gray-900">Balasan Anda:</span> {{ $u->respon->Respon }}
+                            </div>
+                        @else
+                            <form action="{{ route('respon.store') }}" method="POST" class="mt-3 flex flex-col gap-2">
+                                @csrf
+                                <input type="hidden" name="Id_Respon" value="{{ $u->Id_Ulasan }}">
+                                <textarea name="Respon" placeholder="Tulis balasan..." rows="3" maxlength="255" class="w-full min-w-[220px] min-h-24 resize-y border border-[#dde1ea] bg-white text-gray-900 placeholder:text-gray-400 rounded-lg px-3 py-2.5 text-sm leading-relaxed focus:outline-none focus:border-black focus:ring-1 focus:ring-black" required></textarea>
+                                <button type="submit" class="self-start bg-black text-white px-4 py-2 rounded-lg text-xs font-semibold hover:bg-gray-800 transition">Kirim</button>
+                            </form>
+                        @endif
+                    </td>
+                    
+                    <!-- Tanggal -->
+                    <td class="px-3 py-5 border-t border-[#dde1ea] text-right text-[#6b7385] whitespace-nowrap">
+                        {{ $u->created_at?->format('d M Y, H:i') }}
+                    </td>
+
+                    <!-- Aksi Ulasan -->
+                    <td class="px-3 py-5 border-t border-[#dde1ea]">
+                        <div class="flex min-w-48 flex-col gap-2">
+                            @if($u->respon)
+                                <form action="{{ route('respon.update', $u) }}" method="POST" class="flex flex-col gap-2">
+                                    @csrf
+                                    @method('PUT')
+                                    <label for="respon-{{ $u->Id_Ulasan }}" class="text-xs font-semibold text-gray-700">Edit respon</label>
+                                    <textarea id="respon-{{ $u->Id_Ulasan }}" name="Respon" rows="2" maxlength="255" class="w-full border border-[#dde1ea] rounded px-2.5 py-1.5 text-xs focus:outline-none focus:border-black" required>{{ $u->respon->Respon }}</textarea>
+                                    <button type="submit" class="bg-black text-white px-3 py-1.5 rounded text-xs font-semibold hover:bg-gray-800 transition">Simpan respon</button>
+                                </form>
+                            @endif
+
+                            <form action="{{ route('ulasan.destroy', $u) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus ulasan ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="w-full border border-red-200 text-red-600 px-3 py-1.5 rounded text-xs font-semibold hover:bg-red-50 transition">Hapus ulasan</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            @empty
+                <tr><td colspan="5" class="py-8 text-center text-[#6b7385]">Belum ada ulasan yang masuk untuk toko Anda.</td></tr>
+            @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
+@endsection
